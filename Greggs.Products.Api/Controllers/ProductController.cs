@@ -18,14 +18,16 @@ public class ProductController : ControllerBase
     };
 
     private readonly ILogger<ProductController> _logger;
-    //private readonly IDataAccess<Product> _productService;
+
+    private readonly IDataAccess<InternationalProduct> _strategyDataAccess;
+
     private readonly ProductAccessContext _productAccessContext;
 
-    public ProductController(ILogger<ProductController> logger/*, IDataAccess<Product> productService*/)
+    public ProductController(ILogger<ProductController> logger, IDataAccess<InternationalProduct> strategyDataAccess)
     {
         _logger = logger;
+        _strategyDataAccess = strategyDataAccess;
         _productAccessContext = new ProductAccessContext();
-        //_productService = productService;
 
     }
 
@@ -39,11 +41,10 @@ public class ProductController : ControllerBase
             if (pageSize > Products.Length)
                 pageSize = Products.Length;
 
-            _productAccessContext.SetStrategy(new InternationalProductAccessStrategy());
+            _productAccessContext.SetStrategy(_strategyDataAccess);
 
             var products = _productAccessContext.ListProducts(pageStart, pageSize);
 
-            //var products = _productService.List(pageStart, pageSize);
 
             return products.ToArray();
         }
