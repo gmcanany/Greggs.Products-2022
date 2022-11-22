@@ -19,15 +19,15 @@ public class ProductController : ControllerBase
 
     private readonly ILogger<ProductController> _logger;
 
-    private readonly IDataAccess<InternationalProduct> _strategyDataAccess;
+    private readonly IDataAccess<Product> _dataAccess;
 
-    private readonly ProductAccessContext _productAccessContext;
+    //private readonly ProductAccessContext _productAccessContext;
 
-    public ProductController(ILogger<ProductController> logger, IDataAccess<InternationalProduct> strategyDataAccess)
+    public ProductController(ILogger<ProductController> logger, IDataAccess<Product> dataAccess)
     {
         _logger = logger;
-        _strategyDataAccess = strategyDataAccess;
-        _productAccessContext = new ProductAccessContext();
+        _dataAccess = dataAccess;
+        //_productAccessContext = new ProductAccessContext();
 
     }
 
@@ -41,10 +41,12 @@ public class ProductController : ControllerBase
             if (pageSize > Products.Length)
                 pageSize = Products.Length;
 
-            _productAccessContext.SetStrategy(_strategyDataAccess);
+            //_productAccessContext.SetStrategy(_strategyDataAccess);
 
-            var products = _productAccessContext.ListProducts(pageStart, pageSize);
+            //var products = _productAccessContext.ListProducts(pageStart, pageSize);
 
+            var source = new ProductAccessCurrencyDecorator(_dataAccess); // consider using strategy here to instantiate Decorator
+            var products = source.List(pageStart, pageSize);
 
             return products.ToArray();
         }

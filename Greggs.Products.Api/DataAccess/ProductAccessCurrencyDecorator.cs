@@ -6,14 +6,23 @@ namespace Greggs.Products.Api.DataAccess
 {
     public class ProductAccessCurrencyDecorator : ProductAccessDecorator
     {
+        private readonly decimal _exchangeRate;
 
-        public ProductAccessCurrencyDecorator(IDataAccess<Product> provider): base (provider)
+        public ProductAccessCurrencyDecorator(IDataAccess<Product> component): base (component)
         {
+            _exchangeRate = ExchangeRateProvider.Instance().GetRate("EUR");
         }
 
-        public IEnumerable<Product> List(int? pageStart, int? pageSize)
+        public override IEnumerable<Product> List(int? pageStart, int? pageSize)
         {
-            return _provider.List(pageStart, pageSize);
+            var products = Component.List(pageStart, pageSize);
+
+            foreach (var product in products)
+            {
+                product.Price = product.PriceInPounds * _exchangeRate;
+            }
+
+            return products;
         }
     }
 }

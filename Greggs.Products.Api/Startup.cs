@@ -11,8 +11,7 @@ public class Startup
 {
     public void ConfigureServices(IServiceCollection services)
     {
-        //services.AddScoped<IDataAccess<Product>, ProductAccess>();
-        services.AddScoped<IDataAccess<InternationalProduct>, InternationalProductAccessStrategy>();
+        services.AddScoped<IDataAccess<Product>, ProductAccess>();
         
         services.AddControllers();
 

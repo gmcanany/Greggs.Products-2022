@@ -6,16 +6,16 @@ namespace Greggs.Products.Api.DataAccess
 {
     public class ProductAccessDecorator : IDataAccess<Product>
     {
-        public readonly IDataAccess<Product> _provider;
+        public readonly IDataAccess<Product> Component;
 
-        public ProductAccessDecorator(IDataAccess<Product> provider)
+        public ProductAccessDecorator(IDataAccess<Product> component)
         {
-            _provider = provider;
+            Component = component;
         }
 
         public virtual IEnumerable<Product> List(int? pageStart, int? pageSize)
         {
-            return _provider.List(pageStart, pageSize);
+            return Component.List(pageStart, pageSize);
         }
     }
 }

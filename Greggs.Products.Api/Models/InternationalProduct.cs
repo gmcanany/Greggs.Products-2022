@@ -9,9 +9,7 @@
             _exchangeRate = ExchangeRateProvider.Instance().GetRate("EUR");
         }
 
-        public override decimal Price()
-        {
-            return Product.Price() * _exchangeRate;
-        }
+        public decimal Price => Product.Price * _exchangeRate;
+
     }
 }
