@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Greggs.Products.Api.Models
 {
-    public sealed class ExchangeRateProvider
+    public sealed class ExchangeRateProvider : IExchangeRateProvider
     {
         static readonly ExchangeRateProvider instance = new ExchangeRateProvider();
 
@@ -24,9 +24,14 @@ namespace Greggs.Products.Api.Models
             return instance;
         }
 
-        public decimal GetRate(string Code)
+        public decimal GetRate(string code)
         {
-            return _rates.FirstOrDefault(x => x.Code == Code)!.Rate;
+            return _rates.FirstOrDefault(x => x.Code == code)!.Rate;
         }
+    }
+
+    public interface IExchangeRateProvider
+    {
+        decimal GetRate(string code);
     }
 }

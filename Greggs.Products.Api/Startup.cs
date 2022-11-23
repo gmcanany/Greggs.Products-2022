@@ -12,7 +12,8 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddScoped<IDataAccess<Product>, ProductAccess>();
-        
+        services.AddSingleton<IExchangeRateProvider, ExchangeRateProvider>();
+
         services.AddControllers();
 
         services.AddSwaggerGen();

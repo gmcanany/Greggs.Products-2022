@@ -8,9 +8,9 @@ namespace Greggs.Products.Api.DataAccess
     {
         private readonly decimal _exchangeRate;
 
-        public ProductAccessCurrencyDecorator(IDataAccess<Product> component): base (component)
+        public ProductAccessCurrencyDecorator(IDataAccess<Product> component, IExchangeRateProvider exchangeRateProvider) : base (component)
         {
-            _exchangeRate = ExchangeRateProvider.Instance().GetRate("EUR");
+            _exchangeRate = exchangeRateProvider.GetRate("EUR");
         }
 
         public override IEnumerable<Product> List(int? pageStart, int? pageSize)

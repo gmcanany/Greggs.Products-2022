@@ -18,8 +18,10 @@ public class ProductControllerTests
     [Fact]
     public async Task Get_Calls_DataAccessStrategy_ListProducts_Returns_Products()
     {
+        // Arrange
         int pageStart = 0;
         int pageSize = 5;
+        decimal exchangeRate = 1.11m;
         string[] sampleProducts = new[]
         {
             "Sausage Roll", "Vegan Sausage Roll", "Steak Bake","Yum Yum", "Pink Jammie"
@@ -33,13 +35,19 @@ public class ProductControllerTests
             .ToArray();
 
         var loggerMock = new Mock<ILogger<ProductController>>();
+
         var productServiceMock = new Mock<IDataAccess<Product>>();
         productServiceMock.Setup(x => x.List(It.IsAny<int>(), It.IsAny<int>())).Returns(productList).Verifiable();
 
-        var sut = new ProductController(loggerMock.Object, productServiceMock.Object);
+        var exchangeRateProviderMock = new Mock<IExchangeRateProvider>();
+        exchangeRateProviderMock.Setup(x => x.GetRate(It.IsAny<string>())).Returns(exchangeRate).Verifiable();
 
+        var sut = new ProductController(loggerMock.Object, productServiceMock.Object, exchangeRateProviderMock.Object);
+
+        // Act
         var products = sut.Get(pageStart, pageSize);
 
+        // Assert
         productServiceMock.Verify(x => x.List(It.IsAny<int>(), It.IsAny<int>()), Times.Once());
         products.Should().BeOfType<Product[]>();
     }
@@ -66,12 +74,14 @@ public class ProductControllerTests
             .ToArray();
 
         var loggerMock = new Mock<ILogger<ProductController>>();
+        
         var productServiceMock = new Mock<IDataAccess<Product>>();
         productServiceMock.Setup(x => x.List(It.IsAny<int>(), It.IsAny<int>())).Returns(productList).Verifiable();
 
-        // TODO: Need to mock the Exchange Rate Provider. Firstly, add an interface for the Exchange Rate Provider and inject it or use a Factory/Strategy to instantiate it. Then we can mock it for testing.
+        var exchangeRateProviderMock = new Mock<IExchangeRateProvider>();
+        exchangeRateProviderMock.Setup(x => x.GetRate(It.IsAny<string>())).Returns(exchangeRate).Verifiable();
 
-        var sut = new ProductController(loggerMock.Object, productServiceMock.Object);
+        var sut = new ProductController(loggerMock.Object, productServiceMock.Object, exchangeRateProviderMock.Object);
 
         // Act
         var products = sut.Get(pageStart, pageSize);

@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="DataAccess\CurrencyDecorator.cs" />
     <Compile Remove="DataAccess\InternationalProductAccessStrategy.cs" />
     <Compile Remove="Models\InternationalProduct.cs" />
     <Compile Remove="Models\ProductDecorator.cs" />

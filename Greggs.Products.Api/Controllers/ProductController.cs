@@ -20,15 +20,13 @@ public class ProductController : ControllerBase
     private readonly ILogger<ProductController> _logger;
 
     private readonly IDataAccess<Product> _dataAccess;
+    private readonly IExchangeRateProvider _exchangeRateProvider;
 
-    //private readonly ProductAccessContext _productAccessContext;
-
-    public ProductController(ILogger<ProductController> logger, IDataAccess<Product> dataAccess)
+    public ProductController(ILogger<ProductController> logger, IDataAccess<Product> dataAccess, IExchangeRateProvider exchangeRateProvider)
     {
         _logger = logger;
         _dataAccess = dataAccess;
-        //_productAccessContext = new ProductAccessContext();
-
+        _exchangeRateProvider = exchangeRateProvider;
     }
 
     [HttpGet]
@@ -41,11 +39,7 @@ public class ProductController : ControllerBase
             if (pageSize > Products.Length)
                 pageSize = Products.Length;
 
-            //_productAccessContext.SetStrategy(_strategyDataAccess);
-
-            //var products = _productAccessContext.ListProducts(pageStart, pageSize);
-
-            var source = new ProductAccessCurrencyDecorator(_dataAccess); // consider using strategy here to instantiate Decorator
+            var source = new ProductAccessCurrencyDecorator(_dataAccess, _exchangeRateProvider); // consider using factory/strategy here to instantiate Decorator
             var products = source.List(pageStart, pageSize);
 
             return products.ToArray();
